@@ -35,11 +35,13 @@ router.post('/', async (req, res) => {
     // })
     const newUser = new User(_.pick(req.body,['name', 'email', 'password']));
 
-    // const salt = await bcrypt.genSalt(10);
-    // newUser.password = await bcrypt.hash(newUser.password,salt);
+    const salt = bcrypt.genSaltSync(10);
+    newUser.password = bcrypt.hashSync(newUser.password,salt);
 
     await newUser.save();
-    res.status(200).send(_.pick(newUser,['_id','name','email']));
+    // const token = jwt.sign({_id: newUser._id}, config.get('jwtPrivateKey'));
+    const token = newUser.generateAuthToken();
+    res.header("x-auth-token-blog",token).status(200).send(_.pick(newUser,['_id','name','email']));
 });
 
 router.delete('/:id', async (req, res) => {

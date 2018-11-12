@@ -1,3 +1,4 @@
+const config = require('config');
 const Joi = require('joi');
 Joi.objectId= require('joi-objectid')(Joi);
 const express = require('express');
@@ -8,6 +9,11 @@ const users = require('./routers/users');
 const auth = require('./routers/auth');
 
 const mongoose = require('mongoose');
+
+if(!config.get('jwtPrivateKey')){
+        console.error('FATAL ERROR: jwtPrivateKet is not defined');
+        process.exit(1);
+}
 
 //MongoDb work
 //MongoDb connection
