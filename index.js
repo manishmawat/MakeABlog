@@ -1,3 +1,6 @@
+const error = require('./middleware/error');
+const winston = require('winston');
+require('winston-mongodb');
 const config = require('config');
 const Joi = require('joi');
 Joi.objectId= require('joi-objectid')(Joi);
@@ -9,6 +12,11 @@ const users = require('./routers/users');
 const auth = require('./routers/auth');
 
 const mongoose = require('mongoose');
+
+winston.add(winston.transports.File,{filename: 'logfile.log'});
+winston.add(winston.transports.MongoDB, {
+        db:'mongodb://localhost/makeitblog_logs'
+})
 
 if(!config.get('jwtPrivateKey')){
         console.error('FATAL ERROR: jwtPrivateKet is not defined');
@@ -32,5 +40,5 @@ app.use('/api/blogs',blogs);
 app.use('/api/authors',author.authorRouter);
 app.use('/api/users',users);
 app.use('/api/auth',auth);
-
+app.use(error);
 app.listen(3000,() => console.log('Listening on port 3000'));

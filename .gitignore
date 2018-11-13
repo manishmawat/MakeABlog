@@ -1,2 +1,3 @@
 /node_modules
 /testbcrypt.js
+/middleware/winston-logger.js

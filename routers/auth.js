@@ -1,3 +1,4 @@
+const asyncMiddleware = require('../middleware/async');
 const express = require('express');
 const Joi = require('joi');
 const {User} = require('../models/user')
@@ -6,7 +7,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 
-router.post('/', async (req,res) => {
+router.post('/', asyncMiddleware(async (req,res) => {
     const {error} = validate(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
@@ -19,7 +20,7 @@ router.post('/', async (req,res) => {
     // const token = jwt.sign({_id: user._id}, config.get('jwtPrivateKey'));
     const token = user.generateAuthToken();
     res.status(200).send(token);
-});
+}));
 
 
 function validate(user){
